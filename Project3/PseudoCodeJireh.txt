@@ -1,0 +1,213 @@
+<-- main --->
+opening file 
+
+public static int findBestAvailable(Auditorium auditorium, int row, int totalSeats) {
+    int numRows = auditorium.size();
+
+    if (row < 0 || row >= numRows) {
+        valid row number
+    }
+    if (totalSeats > numCols) {
+      Requested number of seats exceeds row length
+    }
+
+    int bestStartingSeat = -1;
+    int smallestDistance = -1;
+
+    for (int startSeat = 0; startSeat <= numCols - totalSeats; startSeat++) {
+        int endSeat = startSeat + totalSeats;
+        int middle = (startSeat + endSeat) / 2;
+        int distanceToMiddle = Math.abs(middle - numCols / 2);
+
+        // Check if these seats are available (no 'X' or other occupied seats)
+        boolean seatsAvailable = true;
+        for (int seat = startSeat; seat < endSeat; seat++) {
+            if (rowSeats.charAt(seat) != '.') {
+                seatsAvailable = false;
+                break;
+            }
+        }
+
+        if (seatsAvailable) {
+            if (bestStartingSeat == -1 || distanceToMiddle < smallestDistance) {
+                bestStartingSeat = startSeat;
+                smallestDistance = distanceToMiddle;
+            }
+        }
+    }
+}
+
+filling linked list with new choices aka reserve seats
+print that to new File 
+
+<--auditorium.java---->
+public class Auditorium<T> {
+    private  Node<T> head; // Acts as head pointer of linked list
+
+    public Auditorium(Node<T> head, String fileName) throws IOException {
+        // Constructor
+        this.head = head;
+        readsAuditorium(fileName);
+    }
+
+    public void setHead(Node<T> head){
+        this.head=head;
+    }
+
+    public Node<T> getHead(){
+        return head;
+    }
+
+    public void readsAuditorium(String fileName)throws IOException{
+        File inFile = new File(fileName);
+        Scanner scnrFile = new Scanner(inFile);
+        int currColumn;
+        int currRow = 0;
+        char currChar;
+        Node<T> currPtr = head;
+        Node<T> currRowNode = head;
+        while (scnrFile.hasNextLine()) {//read lines of file
+            String line = scnrFile.nextLine();//each Line is a string
+            for(currColumn = 0; currColumn < line.length(); currColumn++){//for each column in a row
+                if lines not empty then read char and input into node and Seat {
+                    currChar = line.charAt(currColumn);
+                    Seat seat = new Seat(currChar, currRow, column);
+                
+                    if currColumn is equal to 0 {
+                        if(currRow == 0){//just makes the head
+                            head = new Node(seat, null, null, null);
+                            currPtr = head;//placed here to not touch head aka temp
+                            currRowNode = head;
+                            continue;
+                        } else { // make vertically
+                            currRowNode.down = new Node(seat, null, null,null );
+                            currPtr = currRowNode.down; 
+                            currRowNode = currRowNode.down;
+                        }
+                    } else  {//makes the horizontally 
+                        currPtr.next = new Node(seat, null, null, null);
+                    }
+                    currPtr = currPtr.next;
+                } else {
+                    break;
+                }
+
+            }//end of forLoop
+        } //end of whileLoop 
+        scnrFile.close();      
+    }
+}
+
+displayAuditorium with hashtags 
+best availability function
+
+
+check availability
+
+<--node.java----->
+public class Node<T> {
+    public Node<T> next;
+    public Node<T> down;
+    public T payLoad;
+    public Node<T> prev;
+    public Node() {
+        // Default constructor
+    }
+    public Node(T data, Node<T> nextR, Node<T> downC, Node<T> prev) {
+        // overloader constructor
+        this.payLoad = data;
+        next = nextR;
+        down = downC;
+        this.prev = prev;
+    }
+    // Mutators
+    public void setNext(Node<T> next) {
+        this.next = next;
+    }
+
+    public void setDown(Node<T> down) {
+        this.down = down;
+    }
+
+    public void setData(T data){
+        this.payLoad=data;
+    }
+
+    public void setPrev(Node<T> prev){
+        this.prev=prev;
+    }
+
+    // Accessors
+
+    public Node<T> getNext() {
+        return next;
+    }
+
+    public Node<T> getDown() {
+        return down;
+    }
+
+    public T getData(){
+        return payLoad;
+    }
+    public Node<T> getPrev(){
+        return prev;
+    }
+}
+
+<---seat.java------>
+public class Seat {
+    private int row;
+    private char column;
+    private char currSeat;
+
+    public Seat() {
+        // Default constructor
+    }
+
+    public Seat(char currSeat, int row, char column) {
+        // Overloaded constructor
+        this.row = row;
+        this.currSeat = currSeat;
+        this.column = column;
+    }
+
+    // Mutators
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public void setSeat(char currSeat) {
+        this.currSeat = currSeat;
+    }
+
+    public void setColumn(char column) {
+        this.column = column;
+    }
+
+    // Accessors
+    public int getRow() {
+        return row;
+    }
+
+    public char getSeat() {
+        return currSeat;
+    }
+
+    public char getColumn() {
+        return column;
+    }
+}
+
+
+TestCases: 
+1) run a file with an invalid Character
+2) run an invalid input for amount of customer Tickets
+3) run an invalid input for adult tickets, children tickets and senior tickets
+4) run an auditorium with an invalid Character
+5) run 3 adult tickets in a place with all free spots
+6) get an auditorium file with an invalid auditorium and invaludate it 
+7) run a file that is empty
+8) run a file with an invalid name
+9) run a menuchoice if they dont want to reserve the seats 
+10) run a menuchoice if they do want to reserveSeats
